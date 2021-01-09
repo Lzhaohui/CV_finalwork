@@ -1,81 +1,30 @@
 # Sound-of-Pixels
-Codebase for ECCV18 "The Sound of Pixels".
+ECCV18 "The Sound of Pixels".http://sound-of-pixels.csail.mit.edu/
 
-*This repository is under construction, but the core parts are already there.
 
-<img src="./teaser.png"/>
+## 环境安装
+Windows10
 
-## Environment
-The code is developed under the following configurations.
-- Hardware: 1-4 GPUs (change ```[--num_gpus NUM_GPUS]``` accordingly)
-- Software: Ubuntu 16.04.3 LTS, ***CUDA>=8.0, Python>=3.5, PyTorch>=0.4.0***
+python == 3.6.11
+pip install torch==1.7.1+cu101 torchvision==0.8.2+cu101 torchaudio===0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+pip install scipy==1.2.1
+pip install mir_eval
+pip install opencv-python
 
-## Training
-1. Prepare video dataset.
 
-    a. Download MUSIC dataset from: https://github.com/roudimit/MUSIC_dataset
-    
-    b. Download videos.
+## 训练
+1.从MUSIC数据集上下载数据：https://github.com/roudimit/MUSIC_dataset
 
-2. Preprocess videos. You can do it in your own way as long as the index files are similar.
+2.按照作者文中描述，将视频处理成8fps格式，音频处理成11025Hz采样率。
 
-    a. Extract frames at 8fps and waveforms at 11025Hz from videos. We have following directory structure:
-    ```
-    data
-    ├── audio
-    |   ├── acoustic_guitar
-    │   |   ├── M3dekVSwNjY.mp3
-    │   |   ├── ...
-    │   ├── trumpet
-    │   |   ├── STKXyBGSGyE.mp3
-    │   |   ├── ...
-    │   ├── ...
-    |
-    └── frames
-    |   ├── acoustic_guitar
-    │   |   ├── M3dekVSwNjY.mp4
-    │   |   |   ├── 000001.jpg
-    │   |   |   ├── ...
-    │   |   ├── ...
-    │   ├── trumpet
-    │   |   ├── STKXyBGSGyE.mp4
-    │   |   |   ├── 000001.jpg
-    │   |   |   ├── ...
-    │   |   ├── ...
-    │   ├── ...
-    ```
+3.训练指令：
+python -W ignore main.py --id MUSIC --list_train data/train.csv --list_val data/val.csv --arch_sound unet7 --arch_synthesizer linear --arch_frame resnet18dilated --img_pool maxpool --num_channels 32 --binary_mask 1 --loss bce --weighted_loss 1 --num_mix 2 --log_freq 1 --num_frames 3 --stride_frames 24 --frameRate 8 --audLen 65535 --audRate 44100 --num_gpus 1 --workers 48 --batch_size_per_gpu 20 --lr_frame 1e-4 --lr_sound 1e-3 --lr_synthesizer 1e-3 --num_epoch 100 --lr_steps 40 80 --disp_iter 20 --num_vis 40 --num_val 256
 
-    b. Make training/validation index files by running:
-    ```
-    python scripts/create_index_files.py
-    ```
-    It will create index files ```train.csv```/```val.csv``` with the following format:
-    ```
-    ./data/audio/acoustic_guitar/M3dekVSwNjY.mp3,./data/frames/acoustic_guitar/M3dekVSwNjY.mp4,1580
-    ./data/audio/trumpet/STKXyBGSGyE.mp3,./data/frames/trumpet/STKXyBGSGyE.mp4,493
-    ```
-    For each row, it stores the information: ```AUDIO_PATH,FRAMES_PATH,NUMBER_FRAMES```
+4.验证指令：
+python -W ignore main.py --mode eval --id MUSIC-2mix-LogFreq-resnet18dilated-unet7-linear-frames3stride24-maxpool-binary-weightedLoss-channels32-epoch100-step40_80 --list_val data/val.csv --arch_sound unet7 --arch_synthesizer linear --arch_frame resnet18dilated --img_pool maxpool --num_channels 32 --binary_mask 1 --loss bce --weighted_loss 1 --num_mix 2 --log_freq 1 --num_frames 3 --stride_frames 24 --frameRate 8 --audLen 65535 --audRate 11025
 
-3. Train the default model.
-```bash
-./scripts/train_MUSIC.sh
-```
-
-5. During training, visualizations are saved in HTML format under ```ckpt/MODEL_ID/visualization/```.
-
-## Evaluation
-0. (Optional) Download our trained model weights for evaluation.
-```bash
-./scripts/download_trained_model.sh
-```
-
-1. Evaluate the trained model performance.
-```bash
-./scripts/eval_MUSIC.sh
-```
 
 ## Reference
-If you use the code or dataset from the project, please cite:
 ```bibtex
     @InProceedings{Zhao_2018_ECCV,
         author = {Zhao, Hang and Gan, Chuang and Rouditchenko, Andrew and Vondrick, Carl and McDermott, Josh and Torralba, Antonio},
