@@ -1,6 +1,7 @@
 # Sound-of-Pixels
 ECCV18 "The Sound of Pixels".http://sound-of-pixels.csail.mit.edu/
 
+<img src="./teaser.png"/>
 
 ## 环境安装
 Windows10
