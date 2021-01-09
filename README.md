@@ -32,6 +32,14 @@ python -W ignore main.py --id MUSIC --list_train data/train.csv --list_val data/
 python -W ignore main.py --mode eval --id MUSIC-2mix-LogFreq-resnet18dilated-unet7-linear-frames3stride24-maxpool-binary-weightedLoss-channels32-epoch100-step40_80 --list_val data/val.csv --arch_sound unet7 --arch_synthesizer linear --arch_frame resnet18dilated --img_pool maxpool --num_channels 32 --binary_mask 1 --loss bce --weighted_loss 1 --num_mix 2 --log_freq 1 --num_frames 3 --stride_frames 24 --frameRate 8 --audLen 65535 --audRate 11025
 ```
 
+5.模型下载
+```bibtex
+http://sound-of-pixels.csail.mit.edu/release/MUSIC-2mix-LogFreq-resnet18dilated-unet7-linear-frames3stride24-maxpool-binary-weightedLoss-channels32-epoch100-step40_80/sound_best.pth
+
+http://sound-of-pixels.csail.mit.edu/release/MUSIC-2mix-LogFreq-resnet18dilated-unet7-linear-frames3stride24-maxpool-binary-weightedLoss-channels32-epoch100-step40_80/frame_best.pth
+
+http://sound-of-pixels.csail.mit.edu/release/MUSIC-2mix-LogFreq-resnet18dilated-unet7-linear-frames3stride24-maxpool-binary-weightedLoss-channels32-epoch100-step40_80/synthesizer_best.pth
+```
 ## Reference
 ```bibtex
     @InProceedings{Zhao_2018_ECCV,
